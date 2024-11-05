@@ -2,7 +2,7 @@ using System.Diagnostics;
 
 public class Board
 {
-  public bool debugMode = false;
+  public bool debugMode = true;
   public bool captureAgain = false;
 
   private int[,] _board;
@@ -53,18 +53,14 @@ public class Board
 
   public bool MoveIsValid(int[] fromXY, int[] toXY, int piece)
   {
-    bool moveIsOneDiagonal = IsMoveOneDiagonal(fromXY, toXY, piece);
-    bool moveIsForwards = (IsMoveForwards(fromXY, toXY, piece) || piece == -2 || piece == 2);
-    if (captureAgain && moveIsForwards && moveIsOneDiagonal)
-    {
-      IsCaptured(fromXY, toXY, piece);
-      return true;
-    }
-    else if (moveIsOneDiagonal && moveIsForwards)
+    bool moveLengthIsCorrect = IsMoveLengthCorrect(fromXY, toXY, piece);
+    bool moveDirectionIsCorrect = (IsMoveDirectionCorrect(fromXY, toXY, piece) || piece == -2 || piece == 2);
+
+    if (moveLengthIsCorrect && moveDirectionIsCorrect)
     {
       return true;
     }
-    else if (moveIsForwards && IsCaptured(fromXY, toXY, piece))
+    else if (moveDirectionIsCorrect && IsCaptured(fromXY, toXY, piece))
     {
       return true;
     }
@@ -86,7 +82,7 @@ public class Board
     }
   }
 
-  public bool IsMoveForwards(int[] fromXY, int[] toXY, int player)
+  public bool IsMoveDirectionCorrect(int[] fromXY, int[] toXY, int player)
   {
     if (player == 1)
     {
@@ -99,7 +95,7 @@ public class Board
     return false;
   }
 
-  public bool IsMoveOneDiagonal(int[] fromXY, int[] toXY, int player)
+  public bool IsMoveLengthCorrect(int[] fromXY, int[] toXY, int player)
   {
     (int fromX, int fromY) = (fromXY[0], fromXY[1]);
     (int toX, int toY) = (toXY[0], toXY[1]);
