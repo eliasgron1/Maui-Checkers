@@ -1,8 +1,9 @@
 using System.Diagnostics;
+using System.Security.Cryptography.X509Certificates;
 
 public class Board
 {
-  public bool debugMode = true;
+  public bool debugMode = false;
   public bool captureAgain = false;
 
   private int[,] _board;
@@ -11,14 +12,14 @@ public class Board
     _board = debugMode
        ? new int[,]
        {
+            {0,0,0,0,-1,0,0,0},
             {0,0,0,0,0,0,0,0},
-            {0,0,-1,0,0,0,0,0},
-            {0,0,-1,1,0,0,0,0},
+            {0,0,0,0,0,0,0,0},
             {0,0,0,-1,0,0,0,0},
-            {0,0,0,0,1,1,0,0},
+            {0,0,0,0,1,0,0,0},
             {0,0,0,0,0,0,0,0},
-            {0,1,0,0,-1,0,1,0},
-            {1,0,0,0,0,0,0,0}
+            {0,0,0,0,0,0,0,0},
+            {0,0,0,0,0,0,0,0}
        }
        : new int[,]
        {
@@ -47,7 +48,7 @@ public class Board
       {
         rowString += _board[row, col] + " ";
       }
-      Debug.WriteLine(rowString); // Output each row as a line
+      Debug.WriteLine(rowString);
     }
   }
 
@@ -148,6 +149,7 @@ public class Board
     Debug.WriteLine("IsCaptured returning false");
     return false;
   }
+
   public bool CanPlayerCaptureAgain(int[] toXY, int player)
   {
     int opponent;
@@ -211,5 +213,29 @@ public class Board
     {
       throw new Exception("Error occurred while setting the board value. Out of bounds?", exception);
     }
+  }
+
+  public bool PlayerHasPieces(string player)
+  {
+    int redPieces = 0;
+    int blackPieces = 0;
+    for (int row = 0; row < _board.GetLength(0); row++)
+    {
+      for (int col = 0; col < _board.GetLength(1); col++)
+      {
+        int piece = _board[row, col];
+        redPieces += piece < 0 ? 1 : 0;
+        blackPieces += piece > 0 ? 1 : 0;
+      }
+    }
+    if (player == "red" && redPieces > 0)
+    {
+      return true;
+    }
+    else if (player == "black" && blackPieces > 0)
+    {
+      return true;
+    }
+    return false;
   }
 }

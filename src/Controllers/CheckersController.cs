@@ -1,5 +1,5 @@
-﻿using System.Diagnostics;
-using Checkers;
+﻿using Checkers;
+using System.Diagnostics;
 
 public class CheckersController
 {
@@ -57,6 +57,7 @@ public class CheckersController
       if (board.captureAgain) currentTurn = "red";
     }
     turnLabelController.SwitchTurn(currentTurn);
+    ShouldGameEnd();
     board.PrintBoardToConsole();
   }
 
@@ -75,7 +76,6 @@ public class CheckersController
         board.CheckForKingAndPromote(toXY, piece);
         board.EmptyBoardElement(fromXY[0], fromXY[1]);
         currentTurn = "red";
-        turnLabelController.SwitchTurn(currentTurn);
         graphicsView.Invalidate();
       }
     }
@@ -96,10 +96,21 @@ public class CheckersController
         board.CheckForKingAndPromote(toXY, piece);
         board.EmptyBoardElement(fromXY[0], fromXY[1]);
         currentTurn = "black";
-        turnLabelController.SwitchTurn(currentTurn);
         graphicsView.Invalidate();
       }
     }
     else Debug.WriteLine("bad move try again");
+  }
+
+  public void ShouldGameEnd()
+  {
+    if (!board.PlayerHasPieces("red"))
+    {
+      turnLabelController.GameOverNotifier("black");
+    }
+    else if (!board.PlayerHasPieces("black"))
+    {
+      turnLabelController.GameOverNotifier("red");
+    }
   }
 }
